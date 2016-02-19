@@ -1,0 +1,27 @@
+{
+  "name": "romi45/yii2-seo-behaviour",
+  "description": "Seo behaiviour for Yii2 models and meta tags helper",
+  "keywords": [
+    "yii2",
+    "seo",
+    "behaiviour",
+    "romi45"
+  ],
+  "type": "yii2-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Roman Agilov",
+      "email": "agilovr@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "yiisoft/yii2": "~2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "romi45\\seoContent\\": ""
+    }
+  }
+}
