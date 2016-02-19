@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Migration for seo content storage
  *
- * php yii migrate --migrationPath="@vendor/romi45/yii2-seo-behaviour/migrations"
+ * php yii migrate --migrationPath="@vendor/romi45/yii2-seo-behavior/migrations"
  */
 class m160219_172342_create_seo_content extends Migration
 {

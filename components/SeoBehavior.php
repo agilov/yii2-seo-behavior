@@ -7,11 +7,11 @@ use yii\db\BaseActiveRecord;
 use romi45\seoContent\models\SeoContent;
 
 /**
- * Seo content behaviour
+ * Seo content behavior
  *
  * @property BaseActiveRecord $owner
  */
-class SeoBehaviour extends Behavior
+class SeoBehavior extends Behavior
 {
     /**
      * @var BaseActiveRecord

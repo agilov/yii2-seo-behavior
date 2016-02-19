@@ -10,20 +10,20 @@ My favorite way to install this extension is through [composer](http://getcompos
 Either run
 
 ```bash
-$ composer require romi45/yii2-seo-behaviour:~1.0
+$ composer require romi45/yii2-seo-behavior:~1.0
 ```
 
 or add
 
 ```
-"romi45/yii2-seo-behaviour": "~1.0"
+"romi45/yii2-seo-behavior": "~1.0"
 ```
 to the `require` section of your `composer.json` file.
 
 and then run migration
 
 ```
-php yii migrate --migrationPath="@vendor/romi45/yii2-seo-behaviour/migrations"
+php yii migrate --migrationPath="@vendor/romi45/yii2-seo-behavior/migrations"
 ```
 
 ## Configuring
@@ -31,7 +31,7 @@ php yii migrate --migrationPath="@vendor/romi45/yii2-seo-behaviour/migrations"
 First you need to configure your model:
 
 ```php
-use romi45\seoContent\components\SeoBehaviour;
+use romi45\seoContent\components\SeoBehavior;
 
 class Post extends ActiveRecord
 {
@@ -43,7 +43,7 @@ class Post extends ActiveRecord
         return [
             [
                 'seo' => [
-                    'class' => SeoBehaviour::className(),
+                    'class' => SeoBehavior::className(),
 
                     // This is default values. Usually you can not specify it
                     'titleAttribute' => 'seoTitle',

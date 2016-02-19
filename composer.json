@@ -1,6 +1,6 @@
 {
-  "name": "romi45/yii2-seo-behaviour",
-  "description": "Seo behaviour for Yii2 models and meta tags helper",
+  "name": "romi45/yii2-seo-behavior",
+  "description": "Seo behavior for Yii2 models and meta tags helper",
   "keywords": [
     "yii2",
     "seo",
