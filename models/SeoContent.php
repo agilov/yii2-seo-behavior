@@ -38,7 +38,7 @@ class SeoContent extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'seo_content';
+        return '{{%seo_content}}';
     }
 
     /**
