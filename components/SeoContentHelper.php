@@ -54,6 +54,7 @@ class SeoContentHelper
 	 * Register seo metadata. You can register part of it using methods below right in view code.
 	 *
 	 * @param Component $model
+	 * @since x.x.x
 	 */
 	public static function registerAllSeoMeta(Component $model)
 	{
