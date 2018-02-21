@@ -31,6 +31,7 @@ class SeoContentHelper
 	 * @param Component $model
 	 * @param string $modelSeoAttributeName
 	 * @param string $metaTagKey
+	 * @since x.x.x
 	 */
 	protected static function registerSeoMetaTag(Component $model, string $modelSeoAttributeName, string $metaTagKey)
 	{

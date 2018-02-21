@@ -14,13 +14,11 @@ use yii\base\Model;
 class SeoPatternHelper {
 	/**
 	 * Pattern prefix for represents that its pattern need to be replace with model attribute.
-	 * @since x.x.x
 	 */
 	const MODEL_ATTRIBUTE_PATTERN_PREFIX = 'model_';
 
 	/**
 	 * Pattern delimeter for represents that its pattern or not static text.
-	 * @since x.x.x
 	 */
 	const PATTERN_DELIMETER = '%%';
 
