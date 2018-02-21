@@ -25,6 +25,11 @@ class SeoPatternHelper {
 	/* *********************** CONSTANTS AND VARIABLES ************************** */
 
 	/**
+	 * Pattern prefix for represents that its pattern need to be replace with application params.
+	 */
+	const APP_PARAMETER_PATTERN_PREFIX = 'appParam_';
+
+	/**
 	 * Pattern prefix for represents that its pattern need to be replace with model attribute.
 	 */
 	const MODEL_ATTRIBUTE_PATTERN_PREFIX = 'model_';
@@ -55,7 +60,8 @@ class SeoPatternHelper {
 	 */
 	protected static function getFunctionalPatternPrefixesOptions() {
 		return [
-			self::MODEL_ATTRIBUTE_PATTERN_PREFIX => 'retrieveModelAttribute'
+			self::MODEL_ATTRIBUTE_PATTERN_PREFIX => 'retrieveModelAttribute',
+			self::APP_PARAMETER_PATTERN_PREFIX => 'retrieveAppParamValue'
 		];
 	}
 
@@ -73,17 +79,6 @@ class SeoPatternHelper {
 	}
 
 	/**
-	 * Get model attribute name from model pattern key.
-	 *
-	 * @param $patternKey
-	 *
-	 * @return mixed
-	 */
-	protected static function getModelAttributeNameFromPatternKey($patternKey) {
-		return str_replace(self::MODEL_ATTRIBUTE_PATTERN_PREFIX, '', $patternKey);
-	}
-
-	/**
 	 * Returns if its functional pattern key that need to run callback function.
 	 *
 	 * @param $patternKey
@@ -92,6 +87,18 @@ class SeoPatternHelper {
 	 */
 	protected static function getPatternPrefix($patternKey) {
 		return preg_match('/^([^_]+_)/i', $patternKey,$patternPrefixesMatches) ? $patternPrefixesMatches[0] : '';
+	}
+
+	/**
+	 * Get pattern pattern key value.
+	 *
+	 * @param $patternKey
+	 *
+	 * @return mixed
+	 */
+	protected static function getPatternKeyValue($patternKey) {
+		$patternKeyPrefix = self::getPatternPrefix($patternKey);
+		return str_replace($patternKeyPrefix, '', $patternKey);
 	}
 
 	/**
@@ -117,7 +124,7 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function replace($patternString, $model) {
-		$patternString = '%%model_title%%';
+		$patternString = '%%model_title%% %%appParam_contactEmail%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 
@@ -167,16 +174,18 @@ class SeoPatternHelper {
 	/**
 	 * Callback retrieved function based on callback pattern key prefix.
 	 *
-	 * @param $patternString
+	 * @param $patternKey
+	 * @param $model
 	 *
 	 * @return mixed
 	 */
 	protected static function callbackRetrievedStaticFunction($patternKey, $model) {
 		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
 		$patternKeyPrefix = self::getPatternPrefix($patternKey);
+		$patternKeyValue = self::getPatternKeyValue($patternKey);
 		$patternPrefixFunctionName = ArrayHelper::getValue($patternPrefixesOptions, $patternKeyPrefix);
 
-		return call_user_func([__CLASS__, $patternPrefixFunctionName], $patternKey, $model);
+		return call_user_func([__CLASS__, $patternPrefixFunctionName], $patternKeyValue, $model);
 	}
 
 	/* *********************** PATTERNS RETRIEVED FUNCTIONS ************************** */
@@ -185,15 +194,26 @@ class SeoPatternHelper {
 	 * Returns model attribute compared with pattern key.
 	 * If model don`t have such attribute returns empty string.
 	 *
+	 * @param $patternKeyValue
+	 * @param Model $model
+	 *
+	 * @return mixed|string
+	 */
+	public static function retrieveModelAttribute($patternKeyValue, Model $model) {
+		return ($model->canGetProperty($patternKeyValue)) ? $model->{$patternKeyValue} : '';
+	}
+
+	/**
+	 * Returns yii application params compared with pattern key.
+	 * If yii parameters don`t have parameter with such key returns empty string.
+	 *
 	 * @param $patternKey
 	 * @param Model $model
 	 *
 	 * @return mixed|string
 	 */
-	public static function retrieveModelAttribute($patternKey, Model $model) {
-		$modelAttributeName = self::getModelAttributeNameFromPatternKey($patternKey);
-
-		return (property_exists($model, $modelAttributeName)) ? $model->{$modelAttributeName} : '';
+	public static function retrieveAppParamValue($patternKeyValue, Model $model) {
+		return ArrayHelper::getValue(Yii::$app->params, $patternKeyValue);
 	}
 
 	/* *********************** SANITIZIED FUNCTIONS ************************** */
