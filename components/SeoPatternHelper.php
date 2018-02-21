@@ -4,6 +4,7 @@ namespace romi45\seoContent\components;
 
 use Yii;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 
 /**
  * SeoPatternHelper is the pattern helper class add feature for use patterns in model seo values.
@@ -45,6 +46,19 @@ class SeoPatternHelper {
 		return '/'.$patternDelimeter.'([^'.$patternDelimeter[0].']+)'.$patternDelimeter.'?/iu';
 	}
 
+	/**
+	 * Returns pattern prefixes options associative array
+	 * where keys its patterns prefixes names and values
+	 * is static callback function name that retrieve value from pattern key.
+	 *
+	 * @return array
+	 */
+	protected static function getFunctionalPatternPrefixesOptions() {
+		return [
+			self::MODEL_ATTRIBUTE_PATTERN_PREFIX => 'retrieveModelAttribute'
+		];
+	}
+
 	/* *********************** HELPER FUNCTIONS ************************** */
 
 	/**
@@ -69,6 +83,29 @@ class SeoPatternHelper {
 		return str_replace(self::MODEL_ATTRIBUTE_PATTERN_PREFIX, '', $patternKey);
 	}
 
+	/**
+	 * Returns if its functional pattern key that need to run callback function.
+	 *
+	 * @param $patternKey
+	 *
+	 * @return string
+	 */
+	protected static function getPatternPrefix($patternKey) {
+		return preg_match('/^([^_]+_)/i', $patternKey,$patternPrefixesMatches) ? $patternPrefixesMatches[0] : '';
+	}
+
+	/**
+	 * Returns true if its functional pattern key that need to run callback function.
+	 *
+	 * @param $patternKeyPrefix
+	 *
+	 * @return bool
+	 */
+	protected static function isCallbackPattern($patternKeyPrefix) {
+		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
+		return ArrayHelper::keyExists($patternKeyPrefix, $patternPrefixesOptions);
+	}
+
 	/* *********************** PUBLIC FUNCTIONAL FUNCTIONS ************************** */
 
 	/**
@@ -79,16 +116,17 @@ class SeoPatternHelper {
 	 *
 	 * @return mixed|string
 	 */
-	public static function replace($patternString, Model $model) {
-		$patternString = '%%model_titasdle%%';
+	public static function replace($patternString, $model) {
+		$patternString = '%%model_title%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 
 		$replacements = [];
 		foreach ($patterns as $patternKey) {
-			// Deal with variable variable names first.
-			if (strpos($patternKey, self::MODEL_ATTRIBUTE_PATTERN_PREFIX) === 0) {
-				$replacement = self::retrieveModelAttribute($model, $patternKey);
+			$patternKeyPrefix = self::getPatternPrefix($patternKey);
+
+			if (self::isCallbackPattern($patternKeyPrefix)) {
+				$replacement = self::callbackRetrievedStaticFunction($patternKey, $model);
 			}
 
 			// Replacement retrievals can return null if no replacement can be determined, root those outs.
@@ -116,15 +154,29 @@ class SeoPatternHelper {
 	 *
 	 * @param $patternString
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	protected static function findPatterns($patternString) {
 		$patternString = self::sanitizePatternString($patternString);
 
 		$patternRegExp = self::getPatternRegExp();
-		preg_match_all($patternRegExp, $patternString, $patternsMatches);
 
-		return $patternsMatches[1];
+		return (preg_match_all($patternRegExp, $patternString, $patternsMatches)) ? $patternsMatches[1] : [];
+	}
+
+	/**
+	 * Callback retrieved function based on callback pattern key prefix.
+	 *
+	 * @param $patternString
+	 *
+	 * @return mixed
+	 */
+	protected static function callbackRetrievedStaticFunction($patternKey, $model) {
+		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
+		$patternKeyPrefix = self::getPatternPrefix($patternKey);
+		$patternPrefixFunctionName = ArrayHelper::getValue($patternPrefixesOptions, $patternKeyPrefix);
+
+		return call_user_func([__CLASS__, $patternPrefixFunctionName], $patternKey, $model);
 	}
 
 	/* *********************** PATTERNS RETRIEVED FUNCTIONS ************************** */
@@ -133,12 +185,12 @@ class SeoPatternHelper {
 	 * Returns model attribute compared with pattern key.
 	 * If model don`t have such attribute returns empty string.
 	 *
-	 * @param Model $model
 	 * @param $patternKey
+	 * @param Model $model
 	 *
 	 * @return mixed|string
 	 */
-	public static function retrieveModelAttribute(Model $model, $patternKey) {
+	public static function retrieveModelAttribute($patternKey, Model $model) {
 		$modelAttributeName = self::getModelAttributeNameFromPatternKey($patternKey);
 
 		return (property_exists($model, $modelAttributeName)) ? $model->{$modelAttributeName} : '';
