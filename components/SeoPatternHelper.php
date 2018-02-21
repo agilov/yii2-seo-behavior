@@ -46,6 +46,16 @@ class SeoPatternHelper {
 	const SEPARATOR_PATTERN_KEY = 'sep';
 
 	/**
+	 * Global view separator parameter key name.
+	 */
+	const SEPARATOR_VIEW_PARAMETER_KEY = 'titleSeparator';
+
+	/**
+	 * Default separator value.
+	 */
+	const SEPARATOR_DEFAULT = '-';
+
+	/**
 	 * Pattern delimeter for represents that its pattern or not static text.
 	 */
 	const PATTERN_DELIMETER = '%%';
@@ -271,7 +281,8 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function retrieveSeparator() {
-		return '-';
+		$separatorViewParamKey = self::SEPARATOR_VIEW_PARAMETER_KEY;
+		return (ArrayHelper::keyExists($separatorViewParamKey, Yii::$app->view->params)) ? Yii::$app->view->params[$separatorViewParamKey] : self::SEPARATOR_DEFAULT;
 	}
 
 	/* *********************** SANITIZIED FUNCTIONS ************************** */
