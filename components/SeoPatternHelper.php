@@ -41,6 +41,11 @@ class SeoPatternHelper {
 	const APP_CONFIG_PATTERN_PREFIX = 'appConfig_';
 
 	/**
+	 * Pattern prefix for represents that its pattern need to be replace with view params.
+	 */
+	const VIEW_PARAMETER_PATTERN_PREFIX = 'viewParam_';
+
+	/**
 	 * Pattern prefix for represents that its pattern need to be replace with application configuration params.
 	 */
 	const SEPARATOR_PATTERN_KEY = 'sep';
@@ -84,6 +89,7 @@ class SeoPatternHelper {
 			self::MODEL_ATTRIBUTE_PATTERN_PREFIX => 'retrieveModelAttribute',
 			self::APP_PARAMETER_PATTERN_PREFIX => 'retrieveAppParamValue',
 			self::APP_CONFIG_PATTERN_PREFIX => 'retrieveAppConfigValue',
+			self::VIEW_PARAMETER_PATTERN_PREFIX => 'retrieveViewParamValue',
 		];
 	}
 
@@ -158,7 +164,7 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function replace($patternString, $model) {
-		$patternString = '%%model_title%% %%sep%% %%appParam_contactEmail%% %%appConfig_name%%';
+		$patternString = '%%model_title%% %%sep%% %%appParam_contactEmail%% %%viewParam_titleSeparator%% %%appConfig_name%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 
@@ -259,7 +265,6 @@ class SeoPatternHelper {
 
 	/**
 	 * Returns application global config value compared with pattern key.
-	 * If yii parameters don`t have parameter with such key returns empty string.
 	 *
 	 * @param $patternKey
 	 * @param Model $model
@@ -268,6 +273,18 @@ class SeoPatternHelper {
 	 */
 	public static function retrieveAppConfigValue($patternKeyValue, Model $model) {
 		return (property_exists(Yii::$app, $patternKeyValue) || Yii::$app->canGetProperty($patternKeyValue)) ? Yii::$app->{$patternKeyValue} : '';
+	}
+
+	/**
+	 * Returns view parameter value compared with pattern key.
+	 *
+	 * @param $patternKey
+	 * @param Model $model
+	 *
+	 * @return mixed|string
+	 */
+	public static function retrieveViewParamValue($patternKeyValue, Model $model) {
+		return ArrayHelper::getValue(Yii::$app->view->params, $patternKeyValue);;
 	}
 
 	/**
