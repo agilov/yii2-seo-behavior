@@ -34,7 +34,7 @@ class SeoContentHelper
 	 */
 	protected static function registerSeoMetaTag(Component $model, string $modelSeoAttributeName, string $metaTagKey)
 	{
-		$value = $model->{$modelAttributeName};
+		$value = $model->{$modelSeoAttributeName};
 		if ($value)
 			Yii::$app->view->registerMetaTag(['name' => $metaTagKey, 'content' => $value], $metaTagKey);
 	}
