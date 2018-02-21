@@ -3,6 +3,7 @@
 namespace romi45\seoContent\components;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
@@ -28,6 +29,11 @@ class SeoPatternHelper {
 	 * Pattern prefix for represents that its pattern need to be replace with application params.
 	 */
 	const APP_PARAMETER_PATTERN_PREFIX = 'appParam_';
+
+	/**
+	 * Pattern prefix for represents that its pattern need to be replace with application configuration params.
+	 */
+	const APP_CONFIG_PATTERN_PREFIX = 'appConfig_';
 
 	/**
 	 * Pattern prefix for represents that its pattern need to be replace with model attribute.
@@ -61,7 +67,8 @@ class SeoPatternHelper {
 	protected static function getFunctionalPatternPrefixesOptions() {
 		return [
 			self::MODEL_ATTRIBUTE_PATTERN_PREFIX => 'retrieveModelAttribute',
-			self::APP_PARAMETER_PATTERN_PREFIX => 'retrieveAppParamValue'
+			self::APP_PARAMETER_PATTERN_PREFIX => 'retrieveAppParamValue',
+			self::APP_CONFIG_PATTERN_PREFIX => 'retrieveAppConfigValue',
 		];
 	}
 
@@ -124,7 +131,7 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function replace($patternString, $model) {
-		$patternString = '%%model_title%% %%appParam_contactEmail%%';
+		$patternString = '%%model_title%% %%appParam_contactEmail%% %%appConfig_name%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 
@@ -178,12 +185,17 @@ class SeoPatternHelper {
 	 * @param $model
 	 *
 	 * @return mixed
+	 * @throws InvalidConfigException
 	 */
 	protected static function callbackRetrievedStaticFunction($patternKey, $model) {
 		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
 		$patternKeyPrefix = self::getPatternPrefix($patternKey);
 		$patternKeyValue = self::getPatternKeyValue($patternKey);
 		$patternPrefixFunctionName = ArrayHelper::getValue($patternPrefixesOptions, $patternKeyPrefix);
+
+		if (!method_exists(__CLASS__, $patternPrefixFunctionName)) {
+			throw new InvalidConfigException('"'.__CLASS__.'" does not exist function with name "'.$patternPrefixFunctionName.'"');
+		}
 
 		return call_user_func([__CLASS__, $patternPrefixFunctionName], $patternKeyValue, $model);
 	}
@@ -214,6 +226,19 @@ class SeoPatternHelper {
 	 */
 	public static function retrieveAppParamValue($patternKeyValue, Model $model) {
 		return ArrayHelper::getValue(Yii::$app->params, $patternKeyValue);
+	}
+
+	/**
+	 * Returns yii application params compared with pattern key.
+	 * If yii parameters don`t have parameter with such key returns empty string.
+	 *
+	 * @param $patternKey
+	 * @param Model $model
+	 *
+	 * @return mixed|string
+	 */
+	public static function retrieveAppConfigValue($patternKeyValue, Model $model) {
+		return (property_exists(Yii::$app, $patternKeyValue) || Yii::$app->canGetProperty($patternKeyValue)) ? Yii::$app->{$patternKeyValue} : '';
 	}
 
 	/* *********************** SANITIZIED FUNCTIONS ************************** */
