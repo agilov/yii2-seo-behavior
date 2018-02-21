@@ -26,6 +26,11 @@ class SeoPatternHelper {
 	/* *********************** CONSTANTS AND VARIABLES ************************** */
 
 	/**
+	 * Pattern prefix for represents that its pattern need to be replace with model attribute.
+	 */
+	const MODEL_ATTRIBUTE_PATTERN_PREFIX = 'model_';
+
+	/**
 	 * Pattern prefix for represents that its pattern need to be replace with application params.
 	 */
 	const APP_PARAMETER_PATTERN_PREFIX = 'appParam_';
@@ -36,9 +41,9 @@ class SeoPatternHelper {
 	const APP_CONFIG_PATTERN_PREFIX = 'appConfig_';
 
 	/**
-	 * Pattern prefix for represents that its pattern need to be replace with model attribute.
+	 * Pattern prefix for represents that its pattern need to be replace with application configuration params.
 	 */
-	const MODEL_ATTRIBUTE_PATTERN_PREFIX = 'model_';
+	const SEPARATOR_PATTERN_KEY = 'sep';
 
 	/**
 	 * Pattern delimeter for represents that its pattern or not static text.
@@ -92,7 +97,7 @@ class SeoPatternHelper {
 	 *
 	 * @return string
 	 */
-	protected static function getPatternPrefix($patternKey) {
+	protected static function getPatternKeyPrefix($patternKey) {
 		return preg_match('/^([^_]+_)/i', $patternKey,$patternPrefixesMatches) ? $patternPrefixesMatches[0] : '';
 	}
 
@@ -104,20 +109,32 @@ class SeoPatternHelper {
 	 * @return mixed
 	 */
 	protected static function getPatternKeyValue($patternKey) {
-		$patternKeyPrefix = self::getPatternPrefix($patternKey);
+		$patternKeyPrefix = self::getPatternKeyPrefix($patternKey);
 		return str_replace($patternKeyPrefix, '', $patternKey);
 	}
 
 	/**
 	 * Returns true if its functional pattern key that need to run callback function.
 	 *
-	 * @param $patternKeyPrefix
+	 * @param $patternKey
 	 *
 	 * @return bool
 	 */
-	protected static function isCallbackPattern($patternKeyPrefix) {
+	protected static function isCallbackPattern($patternKey) {
+		$patternKeyPrefix = self::getPatternKeyPrefix($patternKey);
 		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
 		return ArrayHelper::keyExists($patternKeyPrefix, $patternPrefixesOptions);
+	}
+
+	/**
+	 * Returns true if its pattern key that need to replace with separator.
+	 *
+	 * @param $patternKey
+	 *
+	 * @return bool
+	 */
+	protected static function isSeparatorPattern($patternKey) {
+		return $patternKey === self::SEPARATOR_PATTERN_KEY;
 	}
 
 	/* *********************** PUBLIC FUNCTIONAL FUNCTIONS ************************** */
@@ -131,16 +148,18 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function replace($patternString, $model) {
-		$patternString = '%%model_title%% %%appParam_contactEmail%% %%appConfig_name%%';
+		$patternString = '%%model_title%% %%sep%% %%appParam_contactEmail%% %%appConfig_name%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 
 		$replacements = [];
 		foreach ($patterns as $patternKey) {
-			$patternKeyPrefix = self::getPatternPrefix($patternKey);
-
-			if (self::isCallbackPattern($patternKeyPrefix)) {
+			if (self::isCallbackPattern($patternKey)) {
 				$replacement = self::callbackRetrievedStaticFunction($patternKey, $model);
+			}
+
+			if (self::isSeparatorPattern($patternKey)) {
+				$replacement = self::retrieveSeparator();
 			}
 
 			// Replacement retrievals can return null if no replacement can be determined, root those outs.
@@ -189,7 +208,7 @@ class SeoPatternHelper {
 	 */
 	protected static function callbackRetrievedStaticFunction($patternKey, $model) {
 		$patternPrefixesOptions = self::getFunctionalPatternPrefixesOptions();
-		$patternKeyPrefix = self::getPatternPrefix($patternKey);
+		$patternKeyPrefix = self::getPatternKeyPrefix($patternKey);
 		$patternKeyValue = self::getPatternKeyValue($patternKey);
 		$patternPrefixFunctionName = ArrayHelper::getValue($patternPrefixesOptions, $patternKeyPrefix);
 
@@ -216,7 +235,7 @@ class SeoPatternHelper {
 	}
 
 	/**
-	 * Returns yii application params compared with pattern key.
+	 * Returns application params compared with pattern key.
 	 * If yii parameters don`t have parameter with such key returns empty string.
 	 *
 	 * @param $patternKey
@@ -229,7 +248,7 @@ class SeoPatternHelper {
 	}
 
 	/**
-	 * Returns yii application params compared with pattern key.
+	 * Returns application global config value compared with pattern key.
 	 * If yii parameters don`t have parameter with such key returns empty string.
 	 *
 	 * @param $patternKey
@@ -239,6 +258,20 @@ class SeoPatternHelper {
 	 */
 	public static function retrieveAppConfigValue($patternKeyValue, Model $model) {
 		return (property_exists(Yii::$app, $patternKeyValue) || Yii::$app->canGetProperty($patternKeyValue)) ? Yii::$app->{$patternKeyValue} : '';
+	}
+
+	/**
+	 * Returns separator.
+	 * If yii parameters don`t have parameter with such key returns empty string.
+	 * If yii parameters don`t have parameter with such key returns empty string.
+	 *
+	 * @param $patternKey
+	 * @param Model $model
+	 *
+	 * @return mixed|string
+	 */
+	public static function retrieveSeparator() {
+		return '-';
 	}
 
 	/* *********************** SANITIZIED FUNCTIONS ************************** */
