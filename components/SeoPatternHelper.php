@@ -164,7 +164,7 @@ class SeoPatternHelper {
 	 * @return mixed|string
 	 */
 	public static function replace($patternString, $model) {
-		$patternString = '%%model_title%% %%sep%% %%appParam_contactEmail%% %%viewParam_titleSeparator%% %%appConfig_name%%';
+		//$patternString = '%%model_title%% %%sep%% %%appParam_contactEmail%% %%viewParam_titleSeparator%% %%appConfig_name%%';
 		$replacedString = '';
 		$patterns = self::findPatterns($patternString);
 

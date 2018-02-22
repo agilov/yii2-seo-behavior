@@ -3,8 +3,12 @@ namespace romi45\seoContent\components;
 
 use Yii;
 use yii\base\Behavior;
+use yii\base\Component;
+use yii\base\Model;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use romi45\seoContent\models\SeoContent;
+use yii\helpers\ArrayHelper;
 
 /**
  * Seo content behavior
@@ -58,13 +62,16 @@ class SeoBehavior extends Behavior
         if ($model) {
             switch ($name) {
                 case $this->titleAttribute:
-                    $result = $model->title;
+                    $result = ($this->isPropertyChanged($model, 'title')) ?
+	                    $model->title : SeoPatternHelper::replace($model->title, $this->owner);
                     break;
                 case $this->keywordsAttribute:
-                    $result = $model->keywords;
+	                $result = ($this->isPropertyChanged($model, 'keywords')) ?
+		                $model->keywords : SeoPatternHelper::replace($model->keywords, $this->owner);
                     break;
                 case $this->descriptionAttribute:
-                    $result = $model->description;
+	                $result = ($this->isPropertyChanged($model, 'description')) ?
+		                $model->description : SeoPatternHelper::replace($model->description, $this->owner);
                     break;
             }
         }
@@ -129,7 +136,6 @@ class SeoBehavior extends Behavior
         $model->save();
     }
 
-
     /**
      * Deleting seo content
      *
@@ -166,7 +172,6 @@ class SeoBehavior extends Behavior
         return $this->_model;
     }
 
-
     /**
      * @return bool title unique validator
      */
@@ -195,4 +200,16 @@ class SeoBehavior extends Behavior
 
         return true;
     }
+
+	/**
+	 * Check is property in model was changed.
+	 *
+	 * @param ActiveRecord $model
+	 * @param $propertyName
+	 *
+	 * @return bool
+	 */
+	public function isPropertyChanged(ActiveRecord $model, $propertyName) {
+		return ArrayHelper::keyExists($propertyName, $model->dirtyAttributes);
+	}
 }
