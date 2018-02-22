@@ -99,12 +99,58 @@ SeoContentHelper::registerAll($model);
 
 Do not forget about title tag in layout.
 
-```
-
+```php
 <title><?= Html::encode($this->title) ?></title>
 ```
 
+## Patterns
 
+You can use patterns in values and replace it will replaced with some model properties, application config
+property, application parameter or view parameter type will defined by prefixes.
+
+####Model Attribute
+
+```php
+%%model_ATTRIBUTE_NAME%%
+```
+
+For example ```%%model_title%%``` will replace with ```php $model->title```
+
+####Application Global Config Attribute
+
+```php
+%%appConfig_ATTRIBUTE_NAME%%
+```
+
+For example ```%%appConfig_name%%``` will replace with ```php Yii::$app->name```
+
+####Application Global Parameter Attribute
+
+```php
+%%appParam_ATTRIBUTE_NAME%%
+```
+
+For example ```%%appParam_contactEmail%%``` will replace with ```php Yii::$app->params['contactEmail'']```
+
+####View Global Parameter Attribute
+
+```php
+%%viewParam_ATTRIBUTE_NAME%%
+```
+
+For example ```%%viewParam_contactEmail%%``` will replace with ```php Yii::$app->view->params['contactEmail'']```.
+
+####Separator
+
+```php
+%%sep%%
+```
+
+By default separator pattern replaced with '-'. If you want to use another value for separator you need to identify
+```php Yii::$app->view->params['titleSeparator'']``` param.
+
+Hint: instead of 'titleSeparator' you can use ```romi45\seoContent\components\SeoPatternHelper::SEPARATOR_VIEW_PARAMETER_KEY```
+constant value.
 
 ## License
 

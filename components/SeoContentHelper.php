@@ -25,6 +25,21 @@ class SeoContentHelper
         throw new InvalidConfigException('Model ' . $model->className() . ' must have SeoBehavior');
     }
 
+	/**
+	 * Register seo meta tag
+	 *
+	 * @param Component $model
+	 * @param string $modelSeoAttributeName
+	 * @param string $metaTagKey
+	 * @since x.x.x
+	 */
+	protected static function registerSeoMetaTag(Component $model, string $modelSeoAttributeName, string $metaTagKey)
+	{
+		$value = $model->{$modelSeoAttributeName};
+		if ($value)
+			Yii::$app->view->registerMetaTag(['name' => $metaTagKey, 'content' => $value], $metaTagKey);
+	}
+
     /**
      * Register all title and seo metadata. You can register part of it using methods below right in view code.
      *
@@ -33,10 +48,21 @@ class SeoContentHelper
     public static function registerAll(Component $model)
     {
         self::setTitle($model);
-        self::registerMetaTitle($model);
-        self::registerMetaKeywords($model);
-        self::registerMetaDescription($model);
+        self::registerAllSeoMeta($model);
     }
+
+	/**
+	 * Register seo metadata. You can register part of it using methods below right in view code.
+	 *
+	 * @param Component $model
+	 * @since x.x.x
+	 */
+	public static function registerAllSeoMeta(Component $model)
+	{
+		self::registerMetaTitle($model);
+		self::registerMetaKeywords($model);
+		self::registerMetaDescription($model);
+	}
 
     /**
      * Sets page title. If your layout
@@ -57,9 +83,8 @@ class SeoContentHelper
      */
     public static function registerMetaTitle(Component $model)
     {
-        $title = $model->{self::behavior($model)->titleAttribute};
-        if ($title)
-            Yii::$app->view->registerMetaTag(['name' => 'title', 'content' => $title], 'title');
+	    $modelSeoAttributeName = self::behavior($model)->titleAttribute;
+	    self::registerSeoMetaTag($model, $modelSeoAttributeName, 'title');
     }
 
     /**
@@ -69,9 +94,8 @@ class SeoContentHelper
      */
     public static function registerMetaKeywords(Component $model)
     {
-        $keywords = $model->{self::behavior($model)->keywordsAttribute};
-        if ($keywords)
-            Yii::$app->view->registerMetaTag(['name' => 'keywords', 'content' => $keywords], 'keywords');
+	    $modelSeoAttributeName = self::behavior($model)->keywordsAttribute;
+	    self::registerSeoMetaTag($model, $modelSeoAttributeName, 'keywords');
     }
 
     /**
@@ -81,9 +105,7 @@ class SeoContentHelper
      */
     public static function registerMetaDescription(Component $model)
     {
-        $description = $model->{self::behavior($model)->descriptionAttribute};
-        if ($description)
-            Yii::$app->view->registerMetaTag(['name' => 'description', 'content' => $description], 'description');
+    	$modelSeoAttributeName = self::behavior($model)->descriptionAttribute;
+    	self::registerSeoMetaTag($model, $modelSeoAttributeName, 'description');
     }
-
 }
