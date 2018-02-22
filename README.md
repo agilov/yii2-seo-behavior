@@ -105,7 +105,7 @@ Do not forget about title tag in layout.
 
 ## Patterns
 
-You can use patterns in values and replace it will replaced with some model properties, application config
+You can use patterns in values and it will replaced with some model properties, application config
 property, application parameter or view parameter type will defined by prefixes.
 
 **Model Attribute**
