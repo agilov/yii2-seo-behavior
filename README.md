@@ -108,7 +108,7 @@ Do not forget about title tag in layout.
 You can use patterns in values and replace it will replaced with some model properties, application config
 property, application parameter or view parameter type will defined by prefixes.
 
-###Model Attribute
+**Model Attribute**
 
 ```php
 %%model_ATTRIBUTE_NAME%%
@@ -116,7 +116,7 @@ property, application parameter or view parameter type will defined by prefixes.
 
 For example ```%%model_title%%``` will replace with ```php $model->title```
 
-###Application Global Config Attribute
+**Application Global Config Attribute**
 
 ```php
 %%appConfig_ATTRIBUTE_NAME%%
@@ -124,7 +124,7 @@ For example ```%%model_title%%``` will replace with ```php $model->title```
 
 For example ```%%appConfig_name%%``` will replace with ```php Yii::$app->name```
 
-###Application Global Parameter Attribute
+**Application Global Parameter Attribute**
 
 ```php
 %%appParam_ATTRIBUTE_NAME%%
@@ -132,7 +132,7 @@ For example ```%%appConfig_name%%``` will replace with ```php Yii::$app->name```
 
 For example ```%%appParam_contactEmail%%``` will replace with ```php Yii::$app->params['contactEmail'']```
 
-###View Global Parameter Attribute
+**View Global Parameter Attribute**
 
 ```php
 %%viewParam_ATTRIBUTE_NAME%%
@@ -140,7 +140,7 @@ For example ```%%appParam_contactEmail%%``` will replace with ```php Yii::$app->
 
 For example ```%%viewParam_contactEmail%%``` will replace with ```php Yii::$app->view->params['contactEmail'']```.
 
-###Separator
+**Separator**
 
 ```php
 %%sep%%
