@@ -87,7 +87,6 @@ Once you post a form with the above fields, they will be automatically saved and
 To register meta tags and set title in view use following code:
 
 ```php
-
 use romi45\seoContent\components\SeoContentHelper;
 
 /**
@@ -151,6 +150,31 @@ By default separator pattern replaced with '-'. If you want to use another value
 
 Hint: instead of 'titleSeparator' you can use ```romi45\seoContent\components\SeoPatternHelper::SEPARATOR_VIEW_PARAMETER_KEY```
 constant value.
+
+## Global Seo Pattern
+
+You can use global seo pattern to all model istance by set `is_global` parameter to to `1` for model `seoContent`.
+Just create form in view like this:
+```php
+<?php $form = \yii\widgets\ActiveForm::begin(); ?>
+<?= $form->field($model, 'seoTitle')->textInput(); ?>
+<?= $form->field($model, 'seoKeywords')->textInput(); ?>
+<?= $form->field($model, 'seoDescription')->textarea(); ?>
+<?php \yii\widgets\ActiveForm::end(); ?>
+```
+
+And process it at you controller like this:
+```php
+/* @var $model Page */
+$model = new Page();
+
+/* @var $seo SeoContent */
+$seo = $model->getSeoContentModel();
+if ($seo->load(Yii::$app->request->post())) {
+    $seo->is_global = 1;
+    $seo->save();
+}
+```
 
 ## License
 

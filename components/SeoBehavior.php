@@ -157,10 +157,19 @@ class SeoBehavior extends Behavior
     public function getSeoContentModel()
     {
         if ($this->_model === null) {
-            $this->_model = SeoContent::findOne([
+            $seoModel = SeoContent::findOne([
                 'model_id' => $this->owner->getPrimaryKey(),
                 'model_name' => $this->owner->className()
             ]);
+
+            if (empty($seoOwnModel)) {
+	            $seoModel = SeoContent::findOne([
+		            'model_name' => $this->owner->className(),
+		            'is_global' => 1,
+	            ]);
+            }
+
+	        $this->_model = $seoModel;
 
             if ($this->_model === null) {
                 $this->_model = new SeoContent();
