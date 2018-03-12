@@ -87,7 +87,6 @@ Once you post a form with the above fields, they will be automatically saved and
 To register meta tags and set title in view use following code:
 
 ```php
-
 use romi45\seoContent\components\SeoContentHelper;
 
 /**
@@ -105,10 +104,10 @@ Do not forget about title tag in layout.
 
 ## Patterns
 
-You can use patterns in values and replace it will replaced with some model properties, application config
+You can use patterns in values and it will replaced with some model properties, application config
 property, application parameter or view parameter type will defined by prefixes.
 
-####Model Attribute
+**Model Attribute**
 
 ```php
 %%model_ATTRIBUTE_NAME%%
@@ -116,7 +115,7 @@ property, application parameter or view parameter type will defined by prefixes.
 
 For example ```%%model_title%%``` will replace with ```php $model->title```
 
-####Application Global Config Attribute
+**Application Global Config Attribute**
 
 ```php
 %%appConfig_ATTRIBUTE_NAME%%
@@ -124,7 +123,7 @@ For example ```%%model_title%%``` will replace with ```php $model->title```
 
 For example ```%%appConfig_name%%``` will replace with ```php Yii::$app->name```
 
-####Application Global Parameter Attribute
+**Application Global Parameter Attribute**
 
 ```php
 %%appParam_ATTRIBUTE_NAME%%
@@ -132,7 +131,7 @@ For example ```%%appConfig_name%%``` will replace with ```php Yii::$app->name```
 
 For example ```%%appParam_contactEmail%%``` will replace with ```php Yii::$app->params['contactEmail'']```
 
-####View Global Parameter Attribute
+**View Global Parameter Attribute**
 
 ```php
 %%viewParam_ATTRIBUTE_NAME%%
@@ -140,7 +139,7 @@ For example ```%%appParam_contactEmail%%``` will replace with ```php Yii::$app->
 
 For example ```%%viewParam_contactEmail%%``` will replace with ```php Yii::$app->view->params['contactEmail'']```.
 
-####Separator
+**Separator**
 
 ```php
 %%sep%%
@@ -151,6 +150,31 @@ By default separator pattern replaced with '-'. If you want to use another value
 
 Hint: instead of 'titleSeparator' you can use ```romi45\seoContent\components\SeoPatternHelper::SEPARATOR_VIEW_PARAMETER_KEY```
 constant value.
+
+## Global Seo Pattern
+
+You can use global seo pattern to all model istance by set `is_global` parameter to to `1` for model `seoContent`.
+Just create form in view like this:
+```php
+<?php $form = \yii\widgets\ActiveForm::begin(); ?>
+<?= $form->field($model, 'seoTitle')->textInput(); ?>
+<?= $form->field($model, 'seoKeywords')->textInput(); ?>
+<?= $form->field($model, 'seoDescription')->textarea(); ?>
+<?php \yii\widgets\ActiveForm::end(); ?>
+```
+
+And process it at you controller like this:
+```php
+/* @var $model Page */
+$model = new Page();
+
+/* @var $seo SeoContent */
+$seo = $model->getSeoContentModel();
+if ($seo->load(Yii::$app->request->post())) {
+    $seo->is_global = 1;
+    $seo->save();
+}
+```
 
 ## License
 
