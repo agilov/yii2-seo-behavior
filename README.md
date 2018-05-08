@@ -176,6 +176,26 @@ if ($seo->load(Yii::$app->request->post())) {
 }
 ```
 
+## Sql Caching
+
+For enable sql queries caching set `enableSqlQueryCache` parameter 
+at behavior config to to `true`. Also you can set 
+cache duration by `sqlQueryCacheDuration` parameter. Example:
+```php
+/**
+ * @inheritdoc
+ */
+public function behaviors() {
+    return [
+        'seo' => [
+            'class' => SeoBehavior::className(),
+            'enableSqlQueryCache' => true,
+            'sqlQueryCacheDuration' => 24*60*60*30*12, // 1 year
+        ]
+    ];
+}
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
