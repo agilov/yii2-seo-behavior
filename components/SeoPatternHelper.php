@@ -255,11 +255,11 @@ class SeoPatternHelper {
 	 * If yii parameters don`t have parameter with such key returns empty string.
 	 *
 	 * @param $patternKey
-	 * @param Model $model
+	 * @param $model
 	 *
 	 * @return mixed|string
 	 */
-	public static function retrieveAppParamValue($patternKeyValue, Model $model) {
+	public static function retrieveAppParamValue($patternKeyValue, $model) {
 		return ArrayHelper::getValue(Yii::$app->params, $patternKeyValue);
 	}
 
@@ -267,11 +267,11 @@ class SeoPatternHelper {
 	 * Returns application global config value compared with pattern key.
 	 *
 	 * @param $patternKey
-	 * @param Model $model
+	 * @param $model
 	 *
 	 * @return mixed|string
 	 */
-	public static function retrieveAppConfigValue($patternKeyValue, Model $model) {
+	public static function retrieveAppConfigValue($patternKeyValue, $model) {
 		return (property_exists(Yii::$app, $patternKeyValue) || Yii::$app->canGetProperty($patternKeyValue)) ? Yii::$app->{$patternKeyValue} : '';
 	}
 
@@ -279,21 +279,18 @@ class SeoPatternHelper {
 	 * Returns view parameter value compared with pattern key.
 	 *
 	 * @param $patternKey
-	 * @param Model $model
+	 * @param $model
 	 *
 	 * @return mixed|string
 	 */
-	public static function retrieveViewParamValue($patternKeyValue, Model $model) {
-		return ArrayHelper::getValue(Yii::$app->view->params, $patternKeyValue);;
+	public static function retrieveViewParamValue($patternKeyValue, $model) {
+		return ArrayHelper::getValue(Yii::$app->view->params, $patternKeyValue);
 	}
 
 	/**
 	 * Returns separator.
 	 * If yii parameters don`t have parameter with such key returns empty string.
 	 * If yii parameters don`t have parameter with such key returns empty string.
-	 *
-	 * @param $patternKey
-	 * @param Model $model
 	 *
 	 * @return mixed|string
 	 */

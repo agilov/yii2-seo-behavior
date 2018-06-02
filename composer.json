@@ -1,9 +1,10 @@
 {
   "name": "romi45/yii2-seo-behavior",
-  "description": "Seo behavior for Yii2 models and meta tags helper",
+  "description": "Seo behavior for Yii2 models and meta tags helper with patterns using possibility",
   "keywords": [
     "yii2",
     "seo",
+    "patterns",
     "behavior",
     "romi45"
   ],
@@ -13,6 +14,10 @@
     {
       "name": "Roman Agilov",
       "email": "agilovr@gmail.com"
+    },
+    {
+      "name": "Igor Veremsky",
+      "email": "igorveremsky@gmail.com"
     }
   ],
   "minimum-stability": "dev",
