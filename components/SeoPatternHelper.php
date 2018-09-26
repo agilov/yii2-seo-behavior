@@ -187,9 +187,9 @@ class SeoPatternHelper {
 		}
 
 		// Do the actual replacements.
-		if (is_array($replacements) && $replacements !== []) {
-			$replacedString = str_replace(array_keys($replacements), array_values($replacements), $patternString);
-		}
+		$replacedString = (is_array($replacements) && $replacements !== []) ?
+			str_replace(array_keys($replacements), array_values($replacements), $patternString) :
+			$patternString;
 
 		$replacedString = self::sanitizeReplacedString($replacedString);
 
