@@ -147,10 +147,12 @@ class SeoBehavior extends Behavior {
 	 */
 	public function saveSeoContent() {
 		$model = $this->getSeoContentModel();
-		$model->title = $this->owner->{$this->titleAttribute};
-		$model->keywords = $this->owner->{$this->keywordsAttribute};
-		$model->description = $this->owner->{$this->descriptionAttribute};
-		$model->save();
+		if (!$model->is_global) {
+			$model->title = $this->owner->{$this->titleAttribute};
+			$model->keywords = $this->owner->{$this->keywordsAttribute};
+			$model->description = $this->owner->{$this->descriptionAttribute};
+			$model->save();
+		}
 	}
 
 	/**
