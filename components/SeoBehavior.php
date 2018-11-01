@@ -162,7 +162,7 @@ class SeoBehavior extends Behavior {
 	 */
 	public function deleteSeoContent() {
 		$model = $this->getSeoContentModel();
-		if ($model && !$model->getIsNewRecord()) {
+		if ($model && !$model->getIsNewRecord() && !$model->is_global) {
 			$model->delete();
 		}
 	}
