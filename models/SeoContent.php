@@ -56,7 +56,9 @@ class SeoContent extends ActiveRecord
             [['model_name', 'model_id'], 'unique', 'targetAttribute' => ['model_name', 'model_id'], 'message' => 'The combination of Model Name and Model ID has already been taken.'],
 	        [['is_global'], 'integer', 'max' => 1],
 	        [['is_global'], 'default', 'value' => 0],
-	        [['model_name', 'is_global'], 'unique', 'targetAttribute' => ['model_name', 'is_global'], 'message' => 'The combination of Model Name and Is Global has already been taken.'],
+	        [['model_name', 'is_global'], 'unique', 'targetAttribute' => ['model_name', 'is_global'], 'message' => 'The combination of Model Name and Is Global has already been taken.', 'when' => function($model) {
+                    return $model->is_global;
+                }],
         ];
     }
 
