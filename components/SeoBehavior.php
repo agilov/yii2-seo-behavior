@@ -175,7 +175,7 @@ class SeoBehavior extends Behavior {
 	public function getSeoContentModel() {
 		if ($this->_model === null) {
 			$seoOwnModelQuery = SeoContent::find()->where([
-				'model_id' => $this->owner->getPrimaryKey(),
+				'model_id' => (string) $this->owner->getPrimaryKey(),
 				'model_name' => $this->owner->className()
 			]);
 
@@ -205,7 +205,7 @@ class SeoBehavior extends Behavior {
 
 			if ($this->_model === null) {
 				$this->_model = new SeoContent();
-				$this->_model->model_id = $this->owner->getPrimaryKey();
+				$this->_model->model_id = (string) $this->owner->getPrimaryKey();
 				$this->_model->model_name = $this->owner->className();
 			}
 		}
